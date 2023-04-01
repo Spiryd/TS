@@ -1,0 +1,7 @@
+*.out
+*.exe
+._*
+target/
+*.csv
+plots/
+*.csv
