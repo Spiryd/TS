@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import random
 from pick import pick
@@ -30,8 +31,7 @@ def capacity(graph):
     """
     nx.set_edge_attributes(graph, 0, "capacity")
     for i, j in graph.edges:
-        graph[i][j]["capacity"] = graph[i][j]["flow"] * 8
-
+        graph[i][j]["capacity"] = graph[i][j]["flow"]  // 5 * 50 + 50
 
 def T(graph, matrix_sum, m):
     """Calculates avg. latency of a packet in a given Network
@@ -202,17 +202,68 @@ def gen_intensity_matrix():
     return N
 
 def t1(G, N):
-    suma = sum(sum(row) for row in N)
-    m = 1
-    p = 0.99
-    Tmax = T(G, suma, m)
-    print(experiment1(G, N, Tmax, p, m)) 
+    suma = sum(sum(r) for r in N)
+    min_Tmax = [T(G, suma, m) for m in range(1, 11)]
+    for m in range(4, 0, -2):
+        startT = min_Tmax[m - 1]
+        for p in [0.9, 0.95, 0.99]:
+            plt.figure()
+            plt.imshow(
+                [
+                    experiment1(G, N, Tmax, p, m, step=100)
+                    for Tmax in np.linspace(startT, 10 * startT, num=10)
+                ],
+                extent=[0, 1000, startT, 10 * startT],
+                aspect="auto",
+                origin="lower",
+                cmap=mpl.colormaps["plasma"]
+            )
+            plt.colorbar()
+            plt.ylabel("T_max")
+            plt.xlabel("Liczba dodanych pakietów przy p={}, m={}".format(p, m))
+            plt.savefig("TEST1_{}_{}.png".format(m, p))
+            plt.close()
 
 def t2(G, N):
-    return 0
+    suma = sum(sum(r) for r in N)
+    min_Tmax = [T(G, suma, m) for m in range(1, 11)]
+    for m in range(4, 0, -2):
+        startT = min_Tmax[m - 1]
+        for p in [0.9, 0.95, 0.99]:
+            plt.figure()
+            plt.imshow(
+                [experiment2(G, N, Tmax, p, m) for Tmax in np.linspace(startT, 10 * startT, num=10)],
+                extent=[0, 10, startT, 10 * startT],
+                aspect="auto",
+                origin="lower",
+                cmap=mpl.colormaps["plasma"]
+            )
+            plt.colorbar()
+            plt.ylabel("T_max")
+            plt.xlabel("Wzrost przepustowości każdego łącza w b/s p={}, m={}".format(p, m))
+            plt.savefig("TEST2_{}_{}.png".format(m, p))
+            plt.close()
 
 def t3(G, N):
-    return 0
+    suma = sum(sum(r) for r in N)
+    min_Tmax = [T(G, suma, m) for m in range(1, 11)]
+
+    for m in range(4, 0, -1):
+        startT = min_Tmax[m - 1]
+        for p in np.linspace(0.9, 0.99, num=10):
+            plt.figure()
+            plt.imshow(
+                [experiment3(G, N, Tmax, p, m) for Tmax in np.linspace(startT, 10 * startT, num=10)],
+                extent=[0, 10, startT, 10 * startT],
+                aspect="auto",
+                origin="lower",
+                            cmap=mpl.colormaps["plasma"]
+            )
+            plt.colorbar()
+            plt.ylabel("T_max")
+            plt.xlabel("Liczba dodanych krawędzi przy p={}, m={}".format(p, m))
+            plt.savefig("TEST3_{}_{}.png".format(m, p))
+            plt.close()
 
 def see_graph(G):
     """Generates a visual repesentation of the network
