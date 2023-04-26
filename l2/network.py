@@ -1,6 +1,5 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import numpy as np
 import random
 from pick import pick
 from copy import deepcopy
