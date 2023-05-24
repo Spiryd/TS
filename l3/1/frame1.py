@@ -13,6 +13,7 @@ def addCRC(message):
     return message + calced_crc
 
 def encode():
+    count = 0
     stream = ""
     output_string = ""
     with open("origin.txt",'r') as f:
@@ -31,6 +32,8 @@ def encode():
             output_string = TERM_SEQ + output_string + TERM_SEQ
             #print(f"output_string: {output_string}")
             f.write(output_string)
+            count += 1
+    print(f"number of frames = {count}")
         
 def decode():
     calculator = Calculator(Crc32.CRC32)
