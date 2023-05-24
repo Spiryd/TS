@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from typing import List
 from random import random, randint
 from time import sleep
@@ -174,8 +173,8 @@ if __name__ == '__main__':
     ethernet_cable = [None for _ in range(16)]
     # initialize the devices
     devices = [
-        Device(11),
-        Device(3)
+        Device(12),
+        Device(2)
     ]
     # how many iterations will pass
     simulation_duration = 500
