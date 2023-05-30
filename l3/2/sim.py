@@ -223,8 +223,8 @@ def simulate_csma_cd() -> None:
     ethernet_cable = [None for _ in range(16)]
     # initialize the devices
     devices = [
-        Device(12),
-        Device(2)
+        Device(11),
+        Device(3)
     ]
     # how many iterations will pass
     simulation_duration = 500
