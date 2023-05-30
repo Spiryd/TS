@@ -33,7 +33,7 @@ def encode():
             #print(f"output_string: {output_string}")
             f.write(output_string)
             count += 1
-    print(f"number of frames = {count}")
+    print(f"frames sent = {count}")
         
 def decode():
     calculator = Calculator(Crc32.CRC32)
@@ -44,7 +44,7 @@ def decode():
     frames = []
     frames = encoded.split(TERM_SEQ+TERM_SEQ)
     frames = [x.replace(TERM_SEQ, "") for x in frames]
-
+    print(f"frames recived = {len(frames)}")
     with open("decoded.txt",'w') as f:
         for frame in frames:
             frame = frame.replace("111110", "11111")
