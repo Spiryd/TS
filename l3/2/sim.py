@@ -3,6 +3,7 @@ from random import random, randint
 from time import sleep
 
 JAMMING_SIGNAL = float('inf')
+COLLISION_SIGNAL = float('-inf')
 
 
 class Packet(object):
@@ -207,7 +208,7 @@ def can_send_packet(ethernet_cable: List[Packet], index: int) -> bool:
 
 def print_ethernet_cable(ethernet_cable):
     """Print the current state of the ethernet cable."""
-    for el in map(lambda x: str(x.ttl).ljust(2) + ' ' + str(x.value if x.value != JAMMING_SIGNAL else '#@#').ljust(4) if x is not None else '       ', ethernet_cable):
+    for el in map(lambda x: str('#' if x.value == JAMMING_SIGNAL else (x.value if x.value in [1, 2] else '!')) if x is not None else ' ', ethernet_cable):
         print(el, end=' ')
     print()
     
@@ -220,14 +221,14 @@ def simulate_csma_cd() -> None:
         transmission_delay: Time delay between each step of the simulation.
     """
     # packets propagating down a virtual ethernet cable
-    ethernet_cable = [None for _ in range(16)]
+    ethernet_cable = [None for _ in range(80)]
     # initialize the devices
     devices = [
-        Device(11),
-        Device(3)
+        Device(20),
+        Device(60)
     ]
     # how many iterations will pass
-    simulation_duration = 500
+    simulation_duration = 1500
     # probability of a device to emit some data
     probability = 0.4
     # packet length
@@ -248,17 +249,13 @@ def simulate_csma_cd() -> None:
                 device.currently_transmitted_value = 0
                 device.reset_exp_backoff()
 
-            if device.is_ready and random() > 1-probability:
-                device.currently_transmitted_value = data
-                data += 1
-
             t = ethernet_cable[device.ethernet_cable_pos]
 
             if can_send_packet(ethernet_cable, device.ethernet_cable_pos):
 
                 if device.until_next_packet == 0 and device.currently_transmitted_value != 0:
                     ethernet_cable[device.ethernet_cable_pos] = Packet(value=device.currently_transmitted_value,
-                                                                       ttl=packet_length)
+                                                                       ttl=packet_length/2)
                 else:
                     device.until_next_packet -= 1
 
@@ -273,7 +270,7 @@ def simulate_csma_cd() -> None:
                 elif t.value not in [JAMMING_SIGNAL, device.currently_transmitted_value] and device.until_next_packet < 1:
                     # something is wrong and the jamming signal hasn't been transmitted yet
                     ethernet_cable[device.ethernet_cable_pos] = Packet(value=JAMMING_SIGNAL,
-                                                                       ttl=packet_length)
+                                                                       ttl=packet_length/2)
                     device.exp_backoff_iterator += 1
                     device.perform_exponential_backoff()
 
@@ -281,7 +278,7 @@ def simulate_csma_cd() -> None:
                     device.perform_exponential_backoff()
 
         propagate(ethernet_cable)
-        sleep(0.1)
+        sleep(0.008)
         print_ethernet_cable(ethernet_cable)
 
 if __name__ == '__main__':

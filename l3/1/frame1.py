@@ -58,7 +58,7 @@ def decode():
         print(f"origin:  {f.read()}")
 
 def main():
-    encode()
+    #encode()
     decode()
 
 if __name__ == "__main__":
