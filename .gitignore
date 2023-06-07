@@ -6,3 +6,4 @@ target/
 plots/
 *.csv
 *.png
+*.lock
