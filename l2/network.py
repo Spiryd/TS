@@ -211,20 +211,17 @@ def gen_intensity_matrix():
 
 def t1(G, N):
     suma = sum(sum(r) for r in N)
-    M = [1, 2, 3, 4]
-    P = [0.90, 0.95, 0.99]
-    TMAX = [T(G, suma, i) for i in M]
+    M = [2]
+    P = [0.95]
+    TMAX = [T(G, suma, 4)]
     for p in P:
         for m in M:
             res = []
             for Tmax in TMAX:
-                for i in list(enumerate(experiment1(G, N, Tmax, p, m, step=(PING_STANDARD_SIZE*25), iterations=20))):
+                for i in list(enumerate(experiment1(G, N, Tmax, p, m, step=(PING_STANDARD_SIZE*25), iterations=100))):
                     res.append([Tmax, i[0], i[1]])
             df = pd.DataFrame(res, columns=['Tmax', 'iter', 'res'])
-            df = df.pivot("Tmax", "iter", "res")
-            sns.heatmap(df, cmap='plasma')
-            plt.ylabel("T_max")
-            plt.xlabel(f"Iteracja dodawania pakietów przy p={p}, m={m}")
+            sns.lineplot(data=df, x="iter", y="res")
             plt.savefig(f"TEST1_{p}_{m}.png")
             plt.clf()
     
@@ -232,39 +229,33 @@ def t1(G, N):
 
 def t2(G, N):
     suma = sum(sum(r) for r in N)
-    M = [1, 2, 3, 4]
-    P = [0.90, 0.95, 0.99]
-    TMAX = [T(G, suma, i) for i in M]
+    M = [2]
+    P = [0.95]
+    TMAX = [T(G, suma, 4)]
     for p in P:
         for m in M:
             res = []
             for Tmax in TMAX:
-                for i in list(enumerate(experiment2(G, N, Tmax, p, m, iterations=20))):
+                for i in list(enumerate(experiment2(G, N, Tmax, p, m, iterations=100))):
                     res.append([Tmax, i[0], i[1]])
             df = pd.DataFrame(res, columns=['Tmax', 'iter', 'res'])
-            df = df.pivot("Tmax", "iter", "res")
-            sns.heatmap(df, cmap='plasma')
-            plt.ylabel("T_max")
-            plt.xlabel(f"Iteracja wzroztu przepustowosci przy p={p}, m={m}")
+            sns.lineplot(data=df, x="iter", y="res")
             plt.savefig(f"TEST2_{p}_{m}.png")
             plt.clf()
 
 def t3(G, N):
     suma = sum(sum(r) for r in N)
-    M = [1, 2, 3, 4]
-    P = [0.90, 0.95, 0.99]
-    TMAX = [T(G, suma, i) for i in M]
+    M = [2]
+    P = [0.95]
+    TMAX = [T(G, suma, 4)]
     for p in P:
         for m in M:
             res = []
             for Tmax in TMAX:
-                for i in list(enumerate(experiment3(G, N, Tmax, p, m, iterations=20))):
+                for i in list(enumerate(experiment3(G, N, Tmax, p, m, iterations=100))):
                     res.append([Tmax, i[0], i[1]])
             df = pd.DataFrame(res, columns=['Tmax', 'iter', 'res'])
-            df = df.pivot("Tmax", "iter", "res")
-            sns.heatmap(df, cmap='plasma')
-            plt.ylabel("T_max")
-            plt.xlabel(f"Iteracja dodawania krawedzi przy p={p}, m={m}")
+            sns.lineplot(data=df, x="iter", y="res")
             plt.savefig(f"TEST3_{p}_{m}.png")
             plt.clf()
 
