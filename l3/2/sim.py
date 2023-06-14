@@ -85,10 +85,10 @@ class Device(object):
         else:
             return False
 
-    def perform_exponential_backoff(self):
+    def perform_exponential_backoff(self, packet_length):
         """Perform exponential backoff by setting 'until_next_packet' with a random value based on 'exp_backoff_iterator'."""
         k = 10 if self._exp_backoff_iterator > 10 else self._exp_backoff_iterator
-        self._until_next_packet = randint(0, 2 ** k)
+        self._until_next_packet = randint(0, 2 ** k) * packet_length
         self._exp_backoff = True
 
     @property
@@ -257,13 +257,13 @@ def simulate_csma_cd() -> None:
                     ethernet_cable[device.ethernet_cable_pos] = Packet(value=JAMMING_SIGNAL,
                                                                        ttl=packet_length)
                     device.exp_backoff_iterator += 1
-                    device.perform_exponential_backoff()
+                    device.perform_exponential_backoff(packet_length)
 
                 if t.value == JAMMING_SIGNAL and device.until_next_packet == 0:
-                    device.perform_exponential_backoff()
+                    device.perform_exponential_backoff(packet_length)
 
         propagate(ethernet_cable)
-        sleep(0.008)
+        #sleep(0.008)
         print_ethernet_cable(ethernet_cable)
 
 if __name__ == '__main__':

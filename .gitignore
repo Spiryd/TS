@@ -7,3 +7,4 @@ plots/
 *.csv
 *.png
 *.lock
+l3/sim.txt
