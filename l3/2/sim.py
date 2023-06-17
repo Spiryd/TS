@@ -213,7 +213,7 @@ def simulate_csma_cd() -> None:
         Device(60)
     ]
     # how many iterations will pass
-    simulation_duration = 2000
+    simulation_duration = 2500
     # probability of a device to emit some data
     probability = 0.4
     # packet length
